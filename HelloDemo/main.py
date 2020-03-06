@@ -7,6 +7,30 @@ from complex_window import *
 import sys
 import time
 
+# 定义线程实现刷新进度栏
+class RunThread(QThread):
+
+    # 定义一个信号
+    counter_value = Signal(int)
+
+    def __init__(self, parent=None, counter_start=0):
+        super().__init__(parent)
+        self.counter = counter_start
+        self.is_running = True
+
+    def run(self):
+        while self.counter < 100 and self.is_running:
+            time.sleep(0.1)
+            self.counter += 1
+            print(self.counter)
+            # 发射信号
+            self.counter_value.emit(self.counter)
+
+    def stop(self):
+        self.is_running = False
+        print('线程停止中...')
+        self.terminate()
+
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
@@ -38,6 +62,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def set_font(self):
         self.fontComboBox.activated['QString'].connect(self.label.setText)
 
+    # 启动线程
+    def progressbar_counter(self, start_value=0):
+        self.run_thread = RunThread(parent=None, counter_start=start_value)
+        self.run_thread.start()
+        self.run_thread.counter_value.connect(self.set_progressbar)
+
+    # 线程中信号对应的槽函数
+    def set_progressbar(self, counter):
+        if not self.stop_progress:
+            self.progressBar.setValue(counter)
+
     # 单选按钮信号槽
     def update_progressbar(self):
         self.radioButton.setText(u'开始')
@@ -54,23 +89,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def start_progressbar(self):
         self.stop_progress = False
         self.progress_value = self.progressBar.value()
-
-        while (self.progress_value <= 100.1) and not (self.stop_progress):
-            self.progressBar.setValue(self.progress_value)
-            self.progress_value += 1
-            time.sleep(0.3)
-            QApplication.processEvents()
+        self.progressbar_counter(self.progress_value)
 
     # 停止进度栏
     def stop_progressbar(self):
         self.stop_progress = True
+        try:
+            self.run_thread.stop()
+        except Exception as e:
+            print(e)
+            pass
 
     # 重置进度栏
     def reset_progressbar(self):
         self.progress_value = 0
         self.progressBar.reset()
-        self.stop_progress = False
-
+        # 如果是运行状态，则从0重新开始
+        if not self.stop_progress:
+            self.run_thread.counter = 0
+            self.radioButton.setChecked(True)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
