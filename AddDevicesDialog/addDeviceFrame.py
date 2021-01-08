@@ -76,6 +76,11 @@ class Ui_AddDeviceDialog(object):
 
         self.filePathText = QLabel(AddDeviceDialog)
         self.filePathText.setObjectName(u"filePathText")
+        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.filePathText.sizePolicy().hasHeightForWidth())
+        self.filePathText.setSizePolicy(sizePolicy)
 
         self.gridLayout.addWidget(self.filePathText, 4, 1, 1, 2)
 

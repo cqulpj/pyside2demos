@@ -11,12 +11,13 @@ import os
 import requests
 import json
 import xlrd
+import datetime
 
 # 定义线程实现设备添加
 class RunThread(QThread):
 
     # 定义一个信号
-    addedDevName = Signal(str)
+    addedDevName = Signal(bool, str)
 
     def __init__(self, host, port, jwt, filename, appID, dpfID):
         super().__init__()
@@ -48,8 +49,8 @@ class RunThread(QThread):
 
         try:
             res = requests.post(url, data=val, headers={'Authorization':'Bearer '+self.jwt})
-            print(res)
-            return True
+            print(res.status_code, type(res.status_code))
+            return (res.status_code == 200)
         except Exception as e:
             print(e)
             return False
@@ -70,8 +71,8 @@ class RunThread(QThread):
 
         try:
             res = requests.post(url, data=val, headers={'Authorization':'Bearer '+self.jwt})
-            print(res)
-            return True
+            print(res.status_code, type(res.status_code))
+            return (res.status_code == 200)
         except Exception as e:
             print(e)
             return False
@@ -87,7 +88,9 @@ class RunThread(QThread):
             ret_create = self.add_a_device(self.jwt, name, desc, eui, self.appID, self.dpfID)
             ret_set = self.set_device_key(self.jwt, eui, appKey)
             if ret_create and ret_set:
-                self.addedDevName.emit(name)
+                self.addedDevName.emit(True, name)
+            else:
+                self.addedDevName.emit(False, name)
             time.sleep(0.5)
 
     def stop(self):
@@ -121,6 +124,13 @@ class MainDialog(QDialog, Ui_AddDeviceDialog):
     def info_log(self, msg):
         self.infoText.append(msg)
         self.infoText.moveCursor(self.infoText.textCursor().End)
+        filename = 'log/' + datetime.datetime.now().strftime('%Y%m%d') + '.txt'
+        #with io.open(filename, 'a', encoding='utf-8') as f:
+        with open(filename, 'a') as f:
+            nowtime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '\n'
+            f.write(nowtime)
+            f.write(msg + '\n')
+
 
     # 从文件server.txt中获取服务器ip并在UI上显示
     # 同时获取用户名和密码
@@ -213,11 +223,16 @@ class MainDialog(QDialog, Ui_AddDeviceDialog):
                 self.devprofiles[dpfIndex]['id'])
         self.import_thread.addedDevName.connect(self.display_progress)
         self.filename = ''
+        self.filePathText.setText(self.filename)
 
     # 线程中每添加一个设备后发射信号对应的槽函数
-    def display_progress(self, devName):
-        tips = '设备 ' + devName + ' 添加成功.'
-        self.info_log(tips)
+    def display_progress(self, result, devName):
+        if result == True:
+            tips = '设备 ' + devName + ' 添加成功.'
+            self.info_log(tips)
+        else:
+            tips = '设备 ' + devName + ' 添加失败.'
+            self.info_log(tips)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
