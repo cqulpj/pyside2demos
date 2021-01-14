@@ -132,7 +132,7 @@ class MainDialog(QDialog, Ui_AddDeviceDialog):
             f.write(msg + '\n')
 
 
-    # 从文件server.txt中获取服务器ip并在UI上显示
+    # 从文件server.txt中获取服务器ip, port并在UI上显示
     # 同时获取用户名和密码
     def read_host(self):
         with open('server.txt', 'r') as f:
@@ -140,11 +140,12 @@ class MainDialog(QDialog, Ui_AddDeviceDialog):
             if len(hstr) > 0:
                 self.host = hstr
                 print('self.host=', self.host)
+            self.port = f.readline().strip()
             self.user = f.readline().strip()
             self.password = f.readline().strip()
             print('user:%s, password:%s' % (self.user, self.password))
 
-        self.ServerIPText.setText(self.host)
+        self.ServerIPText.setText(self.host + ':' +self.port)
 
     # 用指定用户名和密码登录服务器，获取jwt
     # 若无法登录（服务器故障或者用户名密码错误）则弹出对话框提示并退出
