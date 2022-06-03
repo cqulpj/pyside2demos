@@ -47,28 +47,30 @@ class Ui_dialog(object):
         self.gridLayout_3.setObjectName(u"gridLayout_3")
         self.gridLayout_3.setHorizontalSpacing(10)
         self.gridLayout_3.setContentsMargins(-1, 5, -1, 5)
-        self.startTimeLabel_3 = QLabel(self.groupBox)
-        self.startTimeLabel_3.setObjectName(u"startTimeLabel_3")
-
-        self.gridLayout_3.addWidget(self.startTimeLabel_3, 0, 0, 1, 2)
-
-        self.startTimeEdit_3 = QDateTimeEdit(self.groupBox)
-        self.startTimeEdit_3.setObjectName(u"startTimeEdit_3")
-        self.startTimeEdit_3.setCalendarPopup(True)
-
-        self.gridLayout_3.addWidget(self.startTimeEdit_3, 0, 2, 1, 1)
-
         self.endTimeLabel_3 = QLabel(self.groupBox)
         self.endTimeLabel_3.setObjectName(u"endTimeLabel_3")
 
         self.gridLayout_3.addWidget(self.endTimeLabel_3, 1, 0, 1, 1)
 
-        self.endTimeEdit_3 = QDateTimeEdit(self.groupBox)
-        self.endTimeEdit_3.setObjectName(u"endTimeEdit_3")
-        self.endTimeEdit_3.setCalendarPopup(True)
+        self.endTimeEdit = QDateTimeEdit(self.groupBox)
+        self.endTimeEdit.setObjectName(u"endTimeEdit")
+        self.endTimeEdit.setCalendarPopup(True)
 
-        self.gridLayout_3.addWidget(self.endTimeEdit_3, 1, 2, 1, 1)
+        self.gridLayout_3.addWidget(self.endTimeEdit, 1, 1, 1, 2)
 
+        self.startTimeLabel_3 = QLabel(self.groupBox)
+        self.startTimeLabel_3.setObjectName(u"startTimeLabel_3")
+
+        self.gridLayout_3.addWidget(self.startTimeLabel_3, 0, 0, 1, 1)
+
+        self.startTimeEdit = QDateTimeEdit(self.groupBox)
+        self.startTimeEdit.setObjectName(u"startTimeEdit")
+        self.startTimeEdit.setCalendarPopup(True)
+
+        self.gridLayout_3.addWidget(self.startTimeEdit, 0, 1, 1, 2)
+
+        self.gridLayout_3.setRowStretch(0, 1)
+        self.gridLayout_3.setRowStretch(1, 3)
 
         self.verticalLayout_2.addWidget(self.groupBox)
 
@@ -143,8 +145,10 @@ class Ui_dialog(object):
         dialog.setWindowTitle(QCoreApplication.translate("dialog", u"\u91d1\u521a\u7891\u8ba2\u7968\u4fe1\u606f\u91c7\u96c6", None))
         self.hisDataCheckBox.setText(QCoreApplication.translate("dialog", u"\u5386\u53f2\u6570\u636e\u4e0a\u4f20", None))
         self.groupBox.setTitle(QCoreApplication.translate("dialog", u"\u5386\u53f2\u6570\u636e\u65e5\u671f\u8303\u56f4", None))
-        self.startTimeLabel_3.setText(QCoreApplication.translate("dialog", u"\u8d77\u59cb\uff1a", None))
         self.endTimeLabel_3.setText(QCoreApplication.translate("dialog", u"\u7ed3\u675f\uff1a", None))
+        self.endTimeEdit.setDisplayFormat(QCoreApplication.translate("dialog", u"yyyy/MM/dd HH:mm", None))
+        self.startTimeLabel_3.setText(QCoreApplication.translate("dialog", u"\u8d77\u59cb\uff1a", None))
+        self.startTimeEdit.setDisplayFormat(QCoreApplication.translate("dialog", u"yyyy/MM/dd HH:mm", None))
         self.captureGapLabel.setText(QCoreApplication.translate("dialog", u"\u91c7\u96c6\u95f4\u9694(\u79d2)\uff1a", None))
         self.groupBox_2.setTitle(QCoreApplication.translate("dialog", u"\u64cd\u4f5c", None))
         self.testConnectButton.setText(QCoreApplication.translate("dialog", u"\u6d4b\u8bd5\u8fde\u63a5", None))
